@@ -4,7 +4,7 @@ import java.util.Scanner;
 public class EmptyMap {
 
     public static void visualize(String region) throws FileNotFoundException {
-        File inputFile = new File("input/" + region + ".txt");
+        File inputFile = new File("./src/input/" + region + ".txt");
         Scanner inputObject = new Scanner(inputFile);
 
         String minCoordinates = inputObject.nextLine();
@@ -22,8 +22,8 @@ public class EmptyMap {
         int ySize = (int) (doubleMaxCoordinates[1] - doubleMinCoordinates[1]);
 
         StdDraw.setCanvasSize(512 * (xSize / ySize), 512);
-        StdDraw.setXscale(0, xSize);
-        StdDraw.setYscale(0, ySize);
+        StdDraw.setXscale(doubleMinCoordinates[0], doubleMaxCoordinates[0]);
+        StdDraw.setYscale(doubleMinCoordinates[1], doubleMaxCoordinates[1]);
 
         int subRegions = Integer.parseInt(inputObject.nextLine());
 
