@@ -25,31 +25,43 @@ public class EmptyMap {
         StdDraw.setXscale(0, xSize);
         StdDraw.setYscale(0, ySize);
 
-        inputObject.nextLine();
-        inputObject.nextLine();
-        inputObject.nextLine();
-        inputObject.nextLine();
-        double pointsNum = Double.parseDouble(inputObject.nextLine());
-        double[] xCoor = new double[(int)pointsNum];
-        double[] yCoor = new double[(int)pointsNum];
+        int subRegions = Integer.parseInt(inputObject.nextLine());
 
-        for (int runup = 0; runup < pointsNum && inputObject.hasNextLine(); runup++) {
-            xCoor[runup] = inputObject.nextDouble();
-            yCoor[runup] = inputObject.nextDouble();
-            System.out.println("x-coordinates: "+ xCoor[runup] + " y-coordinate: "+yCoor[runup]);
+        String[] sub = new String[subRegions];
+        for(int current = 0; current < subRegions; current++)
+        {
+            inputObject.nextLine();
+            sub[current] = inputObject.nextLine();
+            inputObject.nextLine();
+            int pointsNum = Integer.parseInt(inputObject.nextLine());
+            double[] xCoor = new double[pointsNum];
+            double[] yCoor = new double[pointsNum];
 
-            if (runup == pointsNum - 1) {
-                StdDraw.polygon(xCoor, yCoor);
-                System.out.println(inputObject.nextLine());
-                System.out.println(inputObject.nextLine());
-                System.out.println(inputObject.nextLine());
-                System.out.println(inputObject.nextLine());
-                pointsNum = Double.parseDouble(inputObject.nextLine());
-                xCoor = new double[(int)pointsNum];
-                yCoor = new double[(int)pointsNum];
-                runup = 0;
+            for(int point = 0; point < pointsNum; point++){
+                xCoor[point] = inputObject.nextDouble();
+                yCoor[point] = inputObject.nextDouble();
+                inputObject.nextLine();
             }
+            StdDraw.polygon(xCoor, yCoor);
+
         }
+
+//        for (int runup = 0; runup < pointsNum && inputObject.hasNextLine(); runup++) {
+//            xCoor[runup] = inputObject.nextDouble();
+//            yCoor[runup] = inputObject.nextDouble();
+//            System.out.println("x-coordinates: "+ xCoor[runup] + " y-coordinate: "+yCoor[runup]);
+//
+//            if (runup == pointsNum - 1) {
+//                StdDraw.polygon(xCoor, yCoor);
+//                System.out.println(inputObject.nextLine());
+//                System.out.println(inputObject.nextLine());
+//                System.out.println(inputObject.nextLine());
+//                pointsNum = Double.parseDouble(inputObject.nextLine());
+//                xCoor = new double[(int)pointsNum];
+//                yCoor = new double[(int)pointsNum];
+//                runup = 0;
+//            }
+//        }
 
         inputObject.close();
         StdDraw.show();
