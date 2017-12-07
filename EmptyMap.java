@@ -4,7 +4,7 @@ import java.util.Scanner;
 public class EmptyMap {
 
     public static void visualize(String region) throws FileNotFoundException {
-        File inputFile = new File("./src/input/" + region + ".txt");
+        File inputFile = new File("input/" + region + ".txt");
         Scanner inputObject = new Scanner(inputFile);
 
         String minCoordinates = inputObject.nextLine();
