@@ -5,10 +5,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.awt.Color;
+import java.util.Set;
+import java.util.*;
 
 public class ElectoralMap {
 
     private static HashMap<String, ArrayList<Subregion>> map = new HashMap<>();
+    private static int pointsNum;
 
     private static class Subregion {
         String name;
@@ -36,22 +39,16 @@ public class ElectoralMap {
 
         private void setColor(Color setCol){
             color = setCol;
-            StdDraw.setPenColor(color);
+            StdDraw.setPenColor(setCol);
         }
 
             }
 
 
-
-// Reads the region input file and then creates Subregion objects based on # of Subregions in file
-// Assigns the Subregions names from the String[] names
-// Then calls on getXYCoor to determine the X and Y Coor for each Subregion created
-// getXYCoor draws Subregion
-// calls on getVotes to assign SubRegion votes --> getVotes returns the greatest of the 3 and sets Color based off those
-
     public static void visualize(String region, String year) throws FileNotFoundException {
         getGeoData(region);
         getVotes(region, year);
+        draw();
 
     }
 
@@ -86,7 +83,6 @@ public class ElectoralMap {
 
 
 
-        String[] reg = new String[subRegions];
         for(int current = 0; current < subRegions; current++)
         {
             ArrayList<Subregion> holdSubs = new ArrayList<>();
@@ -94,7 +90,7 @@ public class ElectoralMap {
             subObject.name = inputRegion.nextLine();
             subObject.region = inputRegion.nextLine();
 
-            int pointsNum = Integer.parseInt(inputRegion.nextLine());
+            pointsNum = Integer.parseInt(inputRegion.nextLine());
             double[] xCoor = new double[pointsNum];
             double[] yCoor = new double[pointsNum];
 
@@ -120,10 +116,6 @@ public class ElectoralMap {
 
         }
 
-            //map.put(map2.put(reg[0], holdSubs);
-
-            //make new scanner object that opens up a specific voting year of the region
-            //reads a line and assigns the subregion the corresponding 3 different vote counts
 
         }
 
@@ -150,28 +142,41 @@ public class ElectoralMap {
             else if(demVotes > repVotes && demVotes > indVotes) {
                 currentR.setColor(Color.BLUE);
             }
-            else if(indVotes > demVotes && indVotes > repVotes) {
+            else {
                 currentR.setColor(Color.GRAY);
                 }
 
-
-            if(currentArray.size() > 1){
-            while(i < currentArray.size()){
-                StdDraw.filledPolygon(currentR.xCoor, currentR.yCoor);
-                i++;
-                }
-            }
-
-            else{
-                StdDraw.filledPolygon(currentR.xCoor, currentR.yCoor);
             }
 
 
-            }
 
         yearObject.close();
 
         }
+
+    public static void draw(){
+
+        String[] holdKeys = new String[pointsNum];
+        Set<String> key = map.keySet();
+        System.out.println(key);
+        holdKeys = key.toArray(holdKeys);
+//        for (int i = 0; i < holdKeys.length; i++) {
+//            System.out.println(holdKeys[i]);
+//
+//        }
+        int x = 0;
+        while(!map.isEmpty()) {
+
+            ArrayList<Subregion> currentArray = map.get(holdKeys[x]);
+
+            for (int i = 0; i < currentArray.size(); i++) {
+                Subregion currentR = currentArray.get(i);
+                StdDraw.filledPolygon(currentR.xCoor, currentR.yCoor);
+            }
+            map.remove(holdKeys[x]);
+            x++;
+        }
+    }
 
 
 
