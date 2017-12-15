@@ -23,7 +23,7 @@ public class ElectoralMap {
 
 
         private Subregion() {
-
+           
         }
 
         private void setXYCoor(double[] x, double[] y){
@@ -39,7 +39,6 @@ public class ElectoralMap {
 
         private void setColor(Color setCol){
             color = setCol;
-            StdDraw.setPenColor(setCol);
         }
 
             }
@@ -134,17 +133,20 @@ public class ElectoralMap {
             int demVotes = Integer.parseInt(holder[2]);
             int indVotes = Integer.parseInt(holder[3]);
             int i = 0;
-            Subregion currentR = currentArray.get(i);
 
-                if(repVotes > demVotes && repVotes > indVotes) {
-                currentR.setColor(Color.RED);
-            }
-            else if(demVotes > repVotes && demVotes > indVotes) {
-                currentR.setColor(Color.BLUE);
-            }
-            else {
-                currentR.setColor(Color.GRAY);
+            while(i < currentArray.size()) {
+                Subregion currentR = currentArray.get(i);
+
+                if (repVotes > demVotes && repVotes > indVotes) {
+                    currentR.setColor(Color.RED);
+                } else if (demVotes > repVotes && demVotes > indVotes) {
+                    currentR.setColor(Color.BLUE);
+                } else {
+                    currentR.setColor(Color.GRAY);
                 }
+                i++;
+            }
+
 
             }
 
@@ -160,10 +162,7 @@ public class ElectoralMap {
         Set<String> key = map.keySet();
         System.out.println(key);
         holdKeys = key.toArray(holdKeys);
-//        for (int i = 0; i < holdKeys.length; i++) {
-//            System.out.println(holdKeys[i]);
-//
-//        }
+
         int x = 0;
         while(!map.isEmpty()) {
 
@@ -171,6 +170,7 @@ public class ElectoralMap {
 
             for (int i = 0; i < currentArray.size(); i++) {
                 Subregion currentR = currentArray.get(i);
+                StdDraw.setPenColor(currentR.color);
                 StdDraw.filledPolygon(currentR.xCoor, currentR.yCoor);
             }
             map.remove(holdKeys[x]);
@@ -183,7 +183,7 @@ public class ElectoralMap {
 
 
     public static void main(String[] args) throws FileNotFoundException{
-        visualize("GA", "2012");
+        visualize("CA", "2016");
     }
     }
 
