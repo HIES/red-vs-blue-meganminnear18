@@ -119,41 +119,47 @@ public class BlendedAmerica {
 
 
 
-    public static void getVotes(String region, String year) throws FileNotFoundException{
+    public static void getVotes(String region, String year) throws FileNotFoundException {
         File inputFile = new File("input/" + region + year + ".txt");
         Scanner yearObject = new Scanner(inputFile);
 
         yearObject.nextLine();
 
-        while(yearObject.hasNextLine()) {
+        while (yearObject.hasNextLine()) {
             String[] holder = yearObject.nextLine().split(",");
             ArrayList<Subregion> currentArray = map.get(holder[0]);
-            double repVotes = Integer.parseInt(holder[1]);
-            double demVotes = Integer.parseInt(holder[2]);
-            double indVotes = Integer.parseInt(holder[3]);
-            int i = 0;
-            double sum = repVotes + demVotes;
-            int a1 = (int)((repVotes/sum)*100);
-            int a2 = (int)((demVotes/sum)*100);
-            int a3 = (int)((indVotes/sum)*100);
-            System.out.println("a1: " + a1 + " a2: " + a2 + " a3: " + a3);
 
-            Color blend = new Color(a1, a3, a2);
-
-            while(i < currentArray.size()) {
+            for (int i = 0; i < currentArray.size(); i++) {
+                int repVotes = Integer.parseInt(holder[1]);
+                int demVotes = Integer.parseInt(holder[2]);
+                int indVotes = Integer.parseInt(holder[3]);
                 Subregion currentR = currentArray.get(i);
-                currentR.setColor(blend);
-                i++;
+                currentR.setVotes(repVotes, demVotes, indVotes);
             }
 
 
+//            int i = 0;
+//            double sum = repVotes + demVotes;
+//            int a1 = (int)((repVotes/sum)*100);
+//            int a3 = (int)((demVotes/sum)*100);
+//            int a2 = (int)((indVotes/sum)*100);
+//            System.out.println("a1: " + a1 + " a2: " + a2 + " a3: " + a3);
+//
+//            Color blend = new Color(a1, a2, a3);
+//
+//            while(i < currentArray.size()) {
+//
+//                currentR.setColor(blend);
+//                i++;
+//            }
+//
+//
+//        }
+
         }
+            yearObject.close();
 
-
-
-        yearObject.close();
-
-    }
+        }
 
     public static void draw(){
 
@@ -169,7 +175,12 @@ public class BlendedAmerica {
 
             for (int i = 0; i < currentArray.size(); i++) {
                 Subregion currentR = currentArray.get(i);
-                StdDraw.setPenColor(currentR.color);
+                double sum = (double) (currentR.votes[0]+ currentR.votes[1] + currentR.votes[2]);
+                int a1 = (int)((currentR.votes[0]*250)/sum);
+                int a2 = (int)((currentR.votes[2]*250)/sum);
+                int a3 = (int)((currentR.votes[1]*250)/sum);
+                Color blend = new Color(a1, a2, a3);
+                StdDraw.setPenColor(blend);
                 StdDraw.filledPolygon(currentR.xCoor, currentR.yCoor);
             }
             map.remove(holdKeys[x]);
@@ -182,7 +193,7 @@ public class BlendedAmerica {
 
 
     public static void main(String[] args) throws FileNotFoundException{
-        visualize("USA", "2016");
+        visualize("TX", "2012");
     }
 }
 
