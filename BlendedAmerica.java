@@ -174,7 +174,7 @@ public class BlendedAmerica {
 
 
     public static void main(String[] args) throws FileNotFoundException{
-        visualize("TX", "2012");
+        visualize("GA", "2012");
     }
 }
 
