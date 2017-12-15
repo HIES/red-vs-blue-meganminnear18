@@ -137,25 +137,6 @@ public class BlendedAmerica {
                 currentR.setVotes(repVotes, demVotes, indVotes);
             }
 
-
-//            int i = 0;
-//            double sum = repVotes + demVotes;
-//            int a1 = (int)((repVotes/sum)*100);
-//            int a3 = (int)((demVotes/sum)*100);
-//            int a2 = (int)((indVotes/sum)*100);
-//            System.out.println("a1: " + a1 + " a2: " + a2 + " a3: " + a3);
-//
-//            Color blend = new Color(a1, a2, a3);
-//
-//            while(i < currentArray.size()) {
-//
-//                currentR.setColor(blend);
-//                i++;
-//            }
-//
-//
-//        }
-
         }
             yearObject.close();
 
