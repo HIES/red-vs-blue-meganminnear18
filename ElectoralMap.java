@@ -183,7 +183,7 @@ public class ElectoralMap {
 
 
     public static void main(String[] args) throws FileNotFoundException{
-        visualize("CA", "2016");
+        visualize("GA", "2016");
     }
     }
 
