@@ -12,26 +12,31 @@ public class ElectoralMap {
 
     private static class Subregion {
         String name;
-        int[] votes;
+        String region;
+        int[] votes = new int[3];
         double[] xCoor;
         double[] yCoor;
         Color color;
 
 
-        private Subregion(double[] x, double[] y) {
-            name = null;
+        private Subregion() {
+
+        }
+
+        private void setXYCoor(double[] x, double[] y){
             xCoor = x;
             yCoor = y;
         }
 
         private void setVotes(int rep, int dem, int ind){
-            votes[1] = rep;
-            votes[2] = dem;
-            votes[3] = ind;
+            votes[0] = rep;
+            votes[1] = dem;
+            votes[2] = ind;
         }
 
         private void setColor(Color setCol){
             color = setCol;
+            StdDraw.setPenColor(color);
         }
 
             }
@@ -44,10 +49,15 @@ public class ElectoralMap {
 // getXYCoor draws Subregion
 // calls on getVotes to assign SubRegion votes --> getVotes returns the greatest of the 3 and sets Color based off those
 
-    public static void visualize(String region) throws FileNotFoundException {
+    public static void visualize(String region, String year) throws FileNotFoundException {
+        getGeoData(region);
+        getVotes(region, year);
+
+    }
+
+    public static void getGeoData(String region) throws FileNotFoundException {
         File inputFile = new File("input/" + region + ".txt");
         File inputFile2 = new File("input/" + region + ".txt");
-        Scanner inputYear = new Scanner(inputFile2);
 
         Scanner inputRegion = new Scanner(inputFile);
 
@@ -71,19 +81,19 @@ public class ElectoralMap {
         StdDraw.setYscale(doubleMinCoordinates[1], doubleMaxCoordinates[1]);
 
 
-
         int subRegions = Integer.parseInt(inputRegion.nextLine());
-        String[] subNames = new String[subRegions];
         inputRegion.nextLine();
 
 
-        ArrayList<Subregion> holdSubs = new ArrayList<>();
 
         String[] reg = new String[subRegions];
         for(int current = 0; current < subRegions; current++)
         {
-            subNames[current] = inputRegion.nextLine();
-            reg[current] = inputRegion.nextLine();
+            ArrayList<Subregion> holdSubs = new ArrayList<>();
+            Subregion subObject = new Subregion();
+            subObject.name = inputRegion.nextLine();
+            subObject.region = inputRegion.nextLine();
+
             int pointsNum = Integer.parseInt(inputRegion.nextLine());
             double[] xCoor = new double[pointsNum];
             double[] yCoor = new double[pointsNum];
@@ -93,27 +103,82 @@ public class ElectoralMap {
                 yCoor[point] = inputRegion.nextDouble();
                 inputRegion.nextLine();
             }
-            Subregion subObject = new Subregion(xCoor, yCoor);
-            subObject.name = subNames[current];
-            holdSubs.add(subObject);
+            subObject.setXYCoor(xCoor, yCoor);
+            if(map.containsKey(subObject.name))
+                map.get(subObject.name).add(subObject);
+
+            else{
+                holdSubs.add(subObject);
+                map.put(subObject.name, holdSubs);
+            }
+
+
 
             inputRegion.nextLine();
 
-            StdDraw.polygon(xCoor, yCoor);
+
 
         }
 
-        map.put(reg[0], holdSubs);
+            //map.put(map2.put(reg[0], holdSubs);
 
-        inputRegion.close();
+            //make new scanner object that opens up a specific voting year of the region
+            //reads a line and assigns the subregion the corresponding 3 different vote counts
 
-        System.out.println("size = " + map.size());
-    }
+        }
+
+
+
+    public static void getVotes(String region, String year) throws FileNotFoundException{
+        File inputFile = new File("input/" + region + year + ".txt");
+        Scanner yearObject = new Scanner(inputFile);
+
+        yearObject.nextLine();
+
+        while(yearObject.hasNextLine()) {
+            String[] holder = yearObject.nextLine().split(",");
+            ArrayList<Subregion> currentArray = map.get(holder[0]);
+            int repVotes = Integer.parseInt(holder[1]);
+            int demVotes = Integer.parseInt(holder[2]);
+            int indVotes = Integer.parseInt(holder[3]);
+            int i = 0;
+            Subregion currentR = currentArray.get(i);
+
+                if(repVotes > demVotes && repVotes > indVotes) {
+                currentR.setColor(Color.RED);
+            }
+            else if(demVotes > repVotes && demVotes > indVotes) {
+                currentR.setColor(Color.BLUE);
+            }
+            else if(indVotes > demVotes && indVotes > repVotes) {
+                currentR.setColor(Color.GRAY);
+                }
+
+
+            if(currentArray.size() > 1){
+            while(i < currentArray.size()){
+                StdDraw.filledPolygon(currentR.xCoor, currentR.yCoor);
+                i++;
+                }
+            }
+
+            else{
+                StdDraw.filledPolygon(currentR.xCoor, currentR.yCoor);
+            }
+
+
+            }
+
+        yearObject.close();
+
+        }
+
+
+
 
 
     public static void main(String[] args) throws FileNotFoundException{
-        visualize("GA");
-        System.out.println("keySet is : \n" + map.keySet());
+        visualize("GA", "2012");
     }
     }
 
