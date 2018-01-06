@@ -10,8 +10,8 @@ import java.util.*;
 
 public class ElectoralMap {
 
-    private static HashMap<String, ArrayList<Subregion>> map = new HashMap<>();
-    private static int pointsNum;
+    static HashMap<String, HashMap<String, ArrayList<Subregion>>> map = new HashMap<>();
+    static int pointsNum;
 
     private static class Subregion {
         String name;
@@ -23,7 +23,7 @@ public class ElectoralMap {
 
 
         private Subregion() {
-           
+
         }
 
         private void setXYCoor(double[] x, double[] y){
@@ -53,7 +53,6 @@ public class ElectoralMap {
 
     public static void getGeoData(String region) throws FileNotFoundException {
         File inputFile = new File("input/" + region + ".txt");
-        File inputFile2 = new File("input/" + region + ".txt");
 
         Scanner inputRegion = new Scanner(inputFile);
 
@@ -86,7 +85,12 @@ public class ElectoralMap {
         {
             ArrayList<Subregion> holdSubs = new ArrayList<>();
             Subregion subObject = new Subregion();
-            subObject.name = inputRegion.nextLine();
+
+            String storeName = inputRegion.nextLine();
+//            if(storeName.contains("city"))
+//                storeName.substring(0, storeName.length()-5);
+
+            subObject.name = storeName;
             subObject.region = inputRegion.nextLine();
 
             pointsNum = Integer.parseInt(inputRegion.nextLine());
@@ -99,12 +103,29 @@ public class ElectoralMap {
                 inputRegion.nextLine();
             }
             subObject.setXYCoor(xCoor, yCoor);
-            if(map.containsKey(subObject.name))
-                map.get(subObject.name).add(subObject);
+
+
+            if(map.containsKey(subObject.region)) {
+                HashMap<String, ArrayList<Subregion>> tempOuterMap = map.get(subObject.region);
+
+                ArrayList<Subregion> tempInnerArrayList = tempOuterMap.get(subObject.name);
+
+                if(tempInnerArrayList == null){
+                    ArrayList<Subregion> newSubList = new ArrayList<>();
+                    newSubList.add(subObject);
+                    tempInnerArrayList = newSubList;
+                    map.get(subObject.region).put(subObject.name, tempInnerArrayList);
+                }
+
+                else
+                tempInnerArrayList.add(subObject);
+            }
 
             else{
                 holdSubs.add(subObject);
-                map.put(subObject.name, holdSubs);
+                HashMap<String, ArrayList<Subregion>> innermap = new HashMap<>();
+                innermap.put(subObject.name, holdSubs);
+                map.put(subObject.region, innermap);
             }
 
 
@@ -119,71 +140,74 @@ public class ElectoralMap {
         }
 
 
-
     public static void getVotes(String region, String year) throws FileNotFoundException{
-        File inputFile = new File("input/" + region + year + ".txt");
-        Scanner yearObject = new Scanner(inputFile);
+        for(String reg: map.keySet()){
+            File inputFile = new File("input/" + reg + year + ".txt");
+            Scanner inputObject = new Scanner(inputFile);
+            HashMap<String, ArrayList<Subregion>> currentHashMap = map.get(reg);
 
-        yearObject.nextLine();
+            inputObject.nextLine();
 
-        while(yearObject.hasNextLine()) {
-            String[] holder = yearObject.nextLine().split(",");
-            ArrayList<Subregion> currentArray = map.get(holder[0]);
-            int repVotes = Integer.parseInt(holder[1]);
-            int demVotes = Integer.parseInt(holder[2]);
-            int indVotes = Integer.parseInt(holder[3]);
-            int i = 0;
+            while(inputObject.hasNextLine()){
+                String[] holder = inputObject.nextLine().split(",");
+                ArrayList<Subregion> currentSub = new ArrayList<>();
 
-            while(i < currentArray.size()) {
-                Subregion currentR = currentArray.get(i);
+                System.out.println("holder region: " + reg + " holder subregion: " + holder[0]);
+                System.out.println("ArrayList: "+ currentHashMap.get(holder[0]));
 
-                if (repVotes > demVotes && repVotes > indVotes) {
-                    currentR.setColor(Color.RED);
-                } else if (demVotes > repVotes && demVotes > indVotes) {
-                    currentR.setColor(Color.BLUE);
-                } else {
-                    currentR.setColor(Color.GRAY);
+                if(currentHashMap.get(holder[0]) == null && reg.equals("VA"))
+                  currentSub = currentHashMap.get(holder[0] + " city");
+                else if(currentHashMap.get(holder[0]) == null && reg.equals("LA"))
+                    currentSub = currentHashMap.get(holder[0] + " Parish");
+                else
+                    currentSub = currentHashMap.get(holder[0]);
+
+                int repVotes = Integer.parseInt(holder[1]);
+                int demVotes = Integer.parseInt(holder[2]);
+                int indVotes = Integer.parseInt(holder[3]);
+
+                for(int i = 0; i < currentSub.size(); i++){
+
+                    if (repVotes > demVotes && repVotes > indVotes)
+                        currentSub.get(i).setColor(Color.RED);
+
+                    else if (demVotes > repVotes && demVotes > indVotes)
+                        currentSub.get(i).setColor(Color.BLUE);
+
+                    else
+                        currentSub.get(i).setColor(Color.LIGHT_GRAY);
+                System.out.println("Current SubRegion: " + currentSub.get(i).name + " Current SubRegion color: " + currentSub.get(i).color );
                 }
-                i++;
-            }
 
 
             }
-
-
-
-        yearObject.close();
-
-        }
-
-    public static void draw(){
-
-        String[] holdKeys = new String[pointsNum];
-        Set<String> key = map.keySet();
-        System.out.println(key);
-        holdKeys = key.toArray(holdKeys);
-
-        int x = 0;
-        while(!map.isEmpty()) {
-
-            ArrayList<Subregion> currentArray = map.get(holdKeys[x]);
-
-            for (int i = 0; i < currentArray.size(); i++) {
-                Subregion currentR = currentArray.get(i);
-                StdDraw.setPenColor(currentR.color);
-                StdDraw.filledPolygon(currentR.xCoor, currentR.yCoor);
-            }
-            map.remove(holdKeys[x]);
-            x++;
         }
     }
 
 
 
 
+    public static void draw(){
+        for(String k: map.keySet()){
+            HashMap<String, ArrayList<Subregion>> innermap = map.get(k);
+
+            for(String reg: innermap.keySet()){
+            ArrayList<Subregion> holdSubs = innermap.get(reg);
+
+            for(int i = 0; i < holdSubs.size(); i++) {
+                StdDraw.setPenColor(holdSubs.get(i).color);
+                StdDraw.filledPolygon(holdSubs.get(i).xCoor, holdSubs.get(i).yCoor);
+            }
+            }
+        }
+
+    }
+
+
+
 
     public static void main(String[] args) throws FileNotFoundException{
-        visualize("GA", "2016");
+        visualize("USA-county", "2016");
     }
     }
 
