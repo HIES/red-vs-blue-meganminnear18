@@ -86,11 +86,7 @@ public class ElectoralMap {
             ArrayList<Subregion> holdSubs = new ArrayList<>();
             Subregion subObject = new Subregion();
 
-            String storeName = inputRegion.nextLine();
-//            if(storeName.contains("city"))
-//                storeName.substring(0, storeName.length()-5);
-
-            subObject.name = storeName;
+            subObject.name = inputRegion.nextLine();
             subObject.region = inputRegion.nextLine();
 
             pointsNum = Integer.parseInt(inputRegion.nextLine());
@@ -152,13 +148,12 @@ public class ElectoralMap {
                 String[] holder = inputObject.nextLine().split(",");
                 ArrayList<Subregion> currentSub = new ArrayList<>();
 
-                System.out.println("holder region: " + reg + " holder subregion: " + holder[0]);
-                System.out.println("ArrayList: "+ currentHashMap.get(holder[0]));
-
                 if(currentHashMap.get(holder[0]) == null && reg.equals("VA"))
                   currentSub = currentHashMap.get(holder[0] + " city");
+
                 else if(currentHashMap.get(holder[0]) == null && reg.equals("LA"))
                     currentSub = currentHashMap.get(holder[0] + " Parish");
+
                 else
                     currentSub = currentHashMap.get(holder[0]);
 
@@ -176,7 +171,6 @@ public class ElectoralMap {
 
                     else
                         currentSub.get(i).setColor(Color.LIGHT_GRAY);
-                System.out.println("Current SubRegion: " + currentSub.get(i).name + " Current SubRegion color: " + currentSub.get(i).color );
                 }
 
 
@@ -195,7 +189,9 @@ public class ElectoralMap {
             ArrayList<Subregion> holdSubs = innermap.get(reg);
 
             for(int i = 0; i < holdSubs.size(); i++) {
-                StdDraw.setPenColor(holdSubs.get(i).color);
+                Subregion currentR = holdSubs.get(i);
+                System.out.println("Region: " + currentR.region + " SubRegion: " + currentR.name + " Color: " + currentR.color);
+                StdDraw.setPenColor(currentR.color);
                 StdDraw.filledPolygon(holdSubs.get(i).xCoor, holdSubs.get(i).yCoor);
             }
             }
