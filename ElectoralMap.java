@@ -175,6 +175,7 @@ public class ElectoralMap {
 
 
             }
+            inputObject.close();
         }
     }
 
@@ -190,7 +191,6 @@ public class ElectoralMap {
 
             for(int i = 0; i < holdSubs.size(); i++) {
                 Subregion currentR = holdSubs.get(i);
-                System.out.println("Region: " + currentR.region + " SubRegion: " + currentR.name + " Color: " + currentR.color);
                 StdDraw.setPenColor(currentR.color);
                 StdDraw.filledPolygon(holdSubs.get(i).xCoor, holdSubs.get(i).yCoor);
             }
